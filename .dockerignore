@@ -1,0 +1,11 @@
+.git
+.gitignore
+.idea
+*.iml
+*.log
+.DS_Store
+.env
+
+target/*
+!target/*.jar
+docker-compose11.yml
