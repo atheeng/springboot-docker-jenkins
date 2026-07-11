@@ -54,7 +54,7 @@ services:
       - app-network
 
   springboot-app:
-    image: 9841141368/springboot-mongodb-crud:v1
+    image: ${APP_IMAGE}
     container_name: ${APP_CONTAINER}
     ports:
       - "${APP_PORT}:${APP_PORT}"
