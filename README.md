@@ -54,3 +54,4 @@ PUT `http://localhost:8081/api/employees/{id}`
 
 ### Delete
 DELETE `http://localhost:8081/api/employees/{id}`
+Jenkins webhook automatic trigger test
