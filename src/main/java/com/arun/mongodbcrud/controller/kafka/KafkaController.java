@@ -25,6 +25,6 @@ public class KafkaController {
 
         kafkaProducerService.sendEmployee(employee);
 
-        return "Employee Published";
+        return "Employee Published cicd";
     }
 }
