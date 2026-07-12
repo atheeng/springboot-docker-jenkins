@@ -34,6 +34,22 @@
 
 pipeline {
     agent any
+ options {
+        disableConcurrentBuilds()
+        timeout(time: 5, unit: 'MINUTES')
+    }
+    environment {
+        PROJECT_NAME = 'springboot-mongodb-crud'
+        COMPOSE_FILE = 'docker-compose-deploy.yml'
+        IMAGE_NAME = 'springboot-docker-jenkins:jenkins-build'
+    }
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 5, unit: 'MINUTES')
+    }
 
     environment {
         PROJECT_NAME = 'springboot-mongodb-crud'
@@ -41,6 +57,22 @@ pipeline {
         IMAGE_NAME = 'springboot-docker-jenkins:jenkins-build'
     }
 
+
+
+    post {
+        success {
+            echo 'CI/CD pipeline completed successfully'
+        }
+
+        failure {
+            echo 'CI/CD pipeline failed'
+        }
+
+        always {
+            echo 'Pipeline execution finished'
+        }
+    }
+}
     stages {
 
         stage('Maven Build') {
