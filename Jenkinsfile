@@ -70,11 +70,11 @@ pipeline {
                 echo '3. Push Docker image to Docker Hub'
 
                 withCredentials([
-                        usernamePassword(
-                            credentialsId: 'dockerhub-credentials',
-                            usernameVariable: '9841141368',
-                            passwordVariable: 'ckr_pat_PDu1CcXUKDoz-1t7JjbB739MJMc'
-                        )
+                            usernamePassword(
+                                credentialsId: 'dockerhub-credentials',
+                                usernameVariable: 'DOCKERHUB_USERNAME',
+                                passwordVariable: 'DOCKERHUB_TOKEN'
+                            )
                     ]) {
                     sh '''
                         echo "$DOCKERHUB_TOKEN" | \
