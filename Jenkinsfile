@@ -17,5 +17,16 @@ pipeline {
             }
         }
 
+        stage('Docker Compose Deploy') {
+            steps {
+                echo 'Docker Compose deployment started'
+
+                sh '''
+                    docker compose -f docker-compose-deploy.yml down
+                    docker compose -f docker-compose-deploy.yml up -d
+                '''
+            }
+        }
+
     }
 }
