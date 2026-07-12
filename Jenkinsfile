@@ -104,6 +104,78 @@ pipeline {
                 '''
             }
         }
+        stage('Start Infrastructure') {
+            steps {
+                echo '5. Start infrastructure services'
+
+                sh '''
+            docker compose \
+              -p "$PROJECT_NAME" \
+              -f "$COMPOSE_FILE" \
+              up -d mongodb redis kafka kafka-ui
+        '''
+            }
+        }
+
+        stage('Wait for Kafka') {
+            steps {
+                echo 'Waiting for Kafka to start'
+
+                sh 'sleep 15'
+            }
+        }
+
+        stage('Remove Old Application') {
+            steps {
+                echo '6. Remove old Spring Boot container'
+
+                sh '''
+            docker rm -f springboot-mongodb-crud-container \
+            2>/dev/null || true
+        '''
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                echo '7. Deploy new Spring Boot application'
+
+                sh '''
+            docker compose \
+              -p "$PROJECT_NAME" \
+              -f "$COMPOSE_FILE" \
+              up -d \
+              --no-deps \
+              --force-recreate \
+              springboot-app
+        '''
+            }
+        }
+
+        stage('Check Container Status') {
+            steps {
+                echo '8. Check container status'
+
+                sh '''
+            docker compose \
+              -p "$PROJECT_NAME" \
+              -f "$COMPOSE_FILE" \
+              ps
+        '''
+            }
+        }
+
+        stage('Check Application Logs') {
+            steps {
+                echo '9. Check Spring Boot logs'
+
+                sh '''
+            sleep 10
+            docker logs --tail 50 \
+            springboot-mongodb-crud-container
+        '''
+            }
+        }
 
         // remaining existing stages...
     }
