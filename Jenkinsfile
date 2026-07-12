@@ -21,11 +21,12 @@ pipeline {
             steps {
                 echo 'Docker Compose deployment started'
 
-                sh '''
-                    docker compose -f docker-compose-deploy.yml down
-                    docker compose -f docker-compose-deploy.yml up -d
-                '''
+              sh '''
+                  docker compose -p springboot-mongodb-crud -f docker-compose-deploy.yml down
+                  docker compose -p springboot-mongodb-crud -f docker-compose-deploy.yml up -d
+              '''
             }
+
         }
 
     }
