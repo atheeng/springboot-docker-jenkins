@@ -1,0 +1,15 @@
+apiVersion: v1  # Kubernetes API version for Service
+kind: Service  # Create a Kubernetes Service
+
+metadata:
+  name: springboot-service  # Service name and internal DNS name
+
+spec:
+  selector:
+    app: springboot-app  # Select Pods with this matching label
+
+  ports:
+    - port: 8081  # Port provided by the Service
+      targetPort: 8081  # Spring Boot container port
+
+  type: ClusterIP  # Accessible only inside the Kubernetes cluster

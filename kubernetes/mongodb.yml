@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: mongodb-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: mongodb
+
+  template:
+    metadata:
+      labels:
+        app: mongodb
+
+    spec:
+      containers:
+        - name: mongodb-container
+          image: mongo:latest
+
+          ports:
+            - containerPort: 27017
+
+          # Mount the persistent storage inside MongoDB
+          volumeMounts:
+            - name: mongodb-data-storage
+              mountPath: /data/db
+
+      # Make the PVC available to this Pod
+      volumes:
+        - name: mongodb-data-storage
+          persistentVolumeClaim:
+            claimName: mongodb-data-pvc
+
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: mongodb-service
+
+spec:
+  selector:
+    app: mongodb
+
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+  type: ClusterIP

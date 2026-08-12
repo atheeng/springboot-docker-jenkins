@@ -1,0 +1,43 @@
+apiVersion: apps/v1  # Kubernetes API version for Deployment
+kind: Deployment  # Create a Redis Deployment
+
+metadata:
+  name: redis-deployment  # Deployment name
+
+spec:
+  replicas: 1  # Maintain one Redis Pod
+
+  selector:
+    matchLabels:
+      app: redis  # Manage Pods with this label
+
+  template:
+    metadata:
+      labels:
+        app: redis  # Label added to the Redis Pod
+
+    spec:
+      containers:
+        - name: redis-container  # Container name
+          image: redis:latest  # Redis Docker image
+
+          ports:
+            - containerPort: 6379  # Redis container port
+
+---
+
+apiVersion: v1  # Kubernetes API version for Service
+kind: Service  # Create a ClusterIP Service
+
+metadata:
+  name: redis-service  # DNS name used by Spring Boot
+
+spec:
+  selector:
+    app: redis  # Send requests to the Redis Pod
+
+  ports:
+    - port: 6379  # Service port
+      targetPort: 6379  # Redis container port
+
+  type: ClusterIP  # Accessible only inside Kubernetes

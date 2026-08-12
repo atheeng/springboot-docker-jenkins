@@ -1,0 +1,69 @@
+apiVersion: apps/v1  # Kubernetes API version for Deployment
+kind: Deployment  # Create Redis Insight Deployment
+
+metadata:
+  name: redisinsight-deployment  # Deployment name
+
+spec:
+  replicas: 1  # Maintain one Redis Insight Pod
+
+  selector:
+    matchLabels:
+      app: redisinsight  # Manage Pods with this label
+
+  template:
+    metadata:
+      labels:
+        app: redisinsight  # Label added to the Pod
+
+    spec:
+      # Allow Redis Insight to write into the mounted volume
+      securityContext:
+        fsGroup: 1000
+
+      containers:
+        - name: redisinsight-container  # Container name
+          image: redis/redisinsight:latest  # Official Redis Insight image
+
+          ports:
+            - containerPort: 5540  # Redis Insight web port
+
+          # Mount persistent storage inside the container
+          volumeMounts:
+            - name: redisinsight-data-storage
+              mountPath: /data
+
+      # Make the PVC available to the Pod
+      volumes:
+        - name: redisinsight-data-storage
+          persistentVolumeClaim:
+            claimName: redisinsight-data-pvc
+
+---
+
+apiVersion: v1  # Kubernetes API version for Service
+kind: Service  # Create ClusterIP Service
+
+metadata:
+  name: redisinsight-service  # Redis Insight Service name
+
+spec:
+  selector:
+    app: redisinsight  # Send traffic to Redis Insight Pod
+
+  ports:
+    - port: 5540  # Service port
+      targetPort: 5540  # Redis Insight container port
+
+  type: ClusterIP  # Internal Kubernetes Service
+
+#apply and verify the deployment using:
+#  kubectl apply -f kubernetes/redisinsight.yml
+#
+#  kubectl get pods -l app=redisinsight
+#
+#  kubectl get service redisinsight-service
+#
+#  Then open the UI using:
+#
+#  kubectl port-forward service/redisinsight-service 5540:5540
