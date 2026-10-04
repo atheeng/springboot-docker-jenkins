@@ -31,7 +31,6 @@ spec:
             limits:
               cpu: 500m
               memory: 1Gi
-
           env:
             - name: SPRING_DATA_MONGODB_URI
               value: mongodb://mongodb-service:27017/arun_mongo_db
